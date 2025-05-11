@@ -13,9 +13,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
+#include <dirent.h>
 
 #include "../external/ini.h"
-#include "../gdrom/gdrom_fs.h"
 #include "draw_prototypes.h"
 
 /* Missing on sh-elf-gcc 9.1 ? */
@@ -228,8 +228,8 @@ static int theme_read(const char *filename, void *theme, int type) {
 
 static void load_themes(char *basePath) {
   char path[128];
-  DIRENT_TYPE dp;
-  DIR_TYPE dir = opendir(basePath);
+  struct dirent *dp;
+  DIR *dir = opendir(basePath);
 
   if (!dir) {
     return;

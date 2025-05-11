@@ -21,6 +21,36 @@ static void wait_cd_ready(void) {
   return;
 }
 
+void bloom_launch(gd_item *disc) {
+  file_t fd;
+  uint32_t bloom_size;
+  uint8_t *bloom_buf;
+  
+  fd = fs_open("/cd/BLOOM.BIN", O_RDONLY);
+  
+  if (fd == -1) {
+	  printf("Can't open %s\n", "/cd/BLOOM.BIN");
+	  return;
+  }
+  
+  fs_seek(fd, 0, SEEK_END);
+  bloom_size = fs_tell(fd);
+  fs_seek(fd, 0, SEEK_SET);
+  bloom_buf = (uint8_t*) malloc(bloom_size+32);
+  bloom_buf = (uint8_t*) (((uint32_t) bloom_buf & 0xffffffe0) + 0x20);
+  fs_read(fd, bloom_buf, bloom_size);
+  fs_close(fd);
+  
+  gdemu_set_img_num((uint16_t)disc->slot_num);
+  
+  wait_cd_ready();
+  
+  /* Patch */
+  ((uint16_t *) 0xAC000198)[0] = 0xFF86;
+  
+  arch_exec(bloom_buf, bloom_size);
+}
+
 void bleem_launch(gd_item *disc) {
   file_t fd;
   uint32_t bleem_size;

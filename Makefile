@@ -16,7 +16,7 @@ RM := rm
 
 CFLAGS := -I. -ffunction-sections -fdata-sections -std=c11 -O2 -g -Wno-unknown-pragmas -Wall -Wextra $(OPTIONS) 
 LDFLAGS := -Wl,--gc-sections -Xlinker -Map=output.map 
-LIBS := -lm ./lib/libcrayon_vmu.a
+LIBS := -lm
 
 all: clean-elf $(TARGET)
 

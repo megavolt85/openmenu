@@ -12,7 +12,6 @@
 
 #include <stdio.h>
 
-#include "../gdrom/gdrom_fs.h"
 #include "../inc/dat_format.h"
 #include "../texture/serial_sanitize.h"
 #include "db_item.h"

@@ -13,6 +13,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define SETTINGS_VERSION	2
+
 extern void exit_to_bios(void);
 extern int cb_multidisc;
 extern int start_cb;
@@ -107,19 +109,18 @@ typedef enum CFG_CUSTOM_THEME_NUM {
   THEME_NUM_END = THEME_9
 } CFG_CUSTOM_THEME_NUM;
 
-typedef struct openmenu_settings {
+typedef struct openmenu_settings_s {
   char identifier[2]; /* OM */
-  uint8_t version;    /* 0x01 */
-  uint8_t padding;    /* 0x00 */
-  CFG_REGION region;
-  CFG_ASPECT aspect;
-  CFG_UI ui;
-  CFG_SORT sort;
-  CFG_FILTER filter;
-  CFG_BEEP beep;
-  CFG_MULTIDISC multidisc;
-  CFG_CUSTOM_THEME custom_theme;
-  CFG_CUSTOM_THEME_NUM custom_theme_num;
+  uint8_t version;
+  char region;
+  char aspect;
+  char ui;
+  char sort;
+  char filter;
+  char beep;
+  char multidisc;
+  char custom_theme;
+  uint8_t custom_theme_num;
 } openmenu_settings;
 
 typedef CFG_REGION region;
@@ -134,5 +135,4 @@ enum draw_state { DRAW_UI = 0,
 void settings_init(void);
 void settings_load(void);
 void settings_save(void);
-void settings_validate(void);
 openmenu_settings* settings_get(void);

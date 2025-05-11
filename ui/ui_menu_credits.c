@@ -28,10 +28,12 @@ static const char* region_choice_text1[] = {"GDMENU"};
 static const char* aspect_choice_text[] = {"4:3", "16:9"};
 static const char* beep_choice_text[] = {"Off", "On"};
 static const char* sort_choice_text[] = {"Default", "Name", "Region", "Genre"};
-static const char* filter_choice_text[] = {
-    "All", "Action", "Racing", "Simulation", "Sports", "Lightgun",
-    "Fighting", "Shooter", "Survival", "Adventure", "Platformer", "RPG",
-    "Shmup", "Strategy", "Puzzle", "Arcade", "Music" };
+static const char* filter_choice_text[] = 
+{
+	"All", "Action", "Racing", "Simulation", "Sports", "Lightgun",
+	"Fighting", "Shooter", "Survival", "Adventure", "Platformer", "RPG",
+	"Shmup", "Strategy", "Puzzle", "Arcade", "Music" 
+};
 static const char* multidisc_choice_text[] = {"Show", "Hide"};
 static const char* save_choice_text[] = {"Save", "Apply"};
 static const char* credits_text[] = {"Credits"};
@@ -728,7 +730,7 @@ void draw_multidisc_tr(void) {
     const int x = (640 / 2) - (width / 2);
     const int y = (480 / 2) - (height / 2);
     const int x_item = x + 4;
-    char line_buf[65];
+    char line_buf[70];
     char temp_game_name[62];
 
     /* Draw a popup in the middle of the screen */
@@ -752,7 +754,7 @@ void draw_multidisc_tr(void) {
       const int disc_num = list_multidisc[i]->disc[0] - '0';
       strncpy(temp_game_name, list_multidisc[i]->name, sizeof(temp_game_name) - 1);
       temp_game_name[sizeof(temp_game_name) - 1] = '\0';
-      snprintf(line_buf, 65, "%s #%d", temp_game_name, disc_num);
+      snprintf(line_buf, 69, "%s #%d", temp_game_name, disc_num);
       font_bmf_draw_auto_size(x_item, cur_y, temp_color, line_buf, width - 4);
     }
   }

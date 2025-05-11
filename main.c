@@ -8,6 +8,7 @@
  * Copyright (c) 2019 Hayden Kowalchuk
  */
 
+#include <arch/arch.h>
 #include <dc/cdrom.h>
 #include <dc/flashrom.h>
 #include <dc/maple.h>
@@ -17,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <arch/exec.h>
 
 #include "backend/db_list.h"
@@ -86,12 +88,12 @@ static void ui_set_choice(int choice) {
   (*current_ui_setup)();
 }
 
-int round( float x) {
+/*int round( float x) {
   if (x < 0.0f)
     return (int)(x - 0.5f);
   else
     return (int)(x + 0.5f);
-}
+}*/
 
 void reload_ui(void) {
   need_reload_ui = 1;
@@ -297,12 +299,16 @@ static void init_gfx_pvr(void) {
       0,                                                                             /* No DMA, but maybe? */
       0,                                                                             /* No FSAA */
       0,                                                                             /* Disable TR autosort */
+      0,
       0
   };
 
   pvr_init(&params);
   draw_set_list(PVR_LIST_OP_POLY);
 }
+
+//KOS_INIT_FLAGS(INIT_CDROM | INIT_CONTROLLER | INIT_VMU);
+KOS_INIT_FLAGS(INIT_DEFAULT | INIT_MALLOCSTATS);
 
 int main(int argc, char *argv[]) {
   /* unused */
@@ -311,6 +317,8 @@ int main(int argc, char *argv[]) {
   
   //gdemu_set_img_num(1);
   //thd_sleep(500);
+  //cdrom_reinit();
+  
   for (int i = 0; i < 8; i++)
   {
 	  maple_device_t * vmu = maple_enum_type(i, MAPLE_FUNC_MEMCARD);

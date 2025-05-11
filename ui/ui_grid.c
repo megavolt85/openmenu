@@ -259,8 +259,8 @@ static void draw_grid_boxes(void) {
 
         /* Draw multiple discs and how many */
         draw_draw_quad(x_pos, y_pos, TILE_SIZE_X * X_SCALE * 0.5f, 28, current_theme_colors->menu_bkg_color);
-        char disc_str[8];
-        snprintf(disc_str, 8, "%d Discs", disc_set);
+        char disc_str[12];
+        snprintf(disc_str, 11, "%d Discs", disc_set);
         font_bmf_begin_draw();
         font_bmf_set_height(24);
         font_bmf_draw_sub(x_pos + 8, y_pos + 2, current_theme_colors->text_color, disc_str);
@@ -427,9 +427,14 @@ static void menu_cb(void) {
     return;
   }
   
-  if (!strncmp(list_current[current_selected()]->disc, "PS1", 3) ||
-	  !strncmp(list_current[current_selected()]->disc, "DIR", 3)) {
-    return;
+  if (!strncmp(list_current[current_selected()]->disc, "DIR", 3)) 
+  {
+	  return;
+  }
+  else if (!strncmp(list_current[current_selected()]->disc, "PS1", 3))
+  {
+	  bloom_launch(list_current[current_selected()]);
+	  return;
   }
   
   start_cb = 0;

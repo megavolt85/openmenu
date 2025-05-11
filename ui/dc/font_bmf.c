@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../gdrom/gdrom_fs.h"
 #include "../../inc/dbgprint.h"
 #include "../draw_prototypes.h"
 
@@ -403,8 +402,7 @@ int font_bmf_init(const char *fnt, const char *texture, int is_wide) {
   }
   int ret = 0;
   char temp_fnt[128];
-  memcpy(temp_fnt, DISC_PREFIX, strlen(DISC_PREFIX) + 1);
-  strcat(temp_fnt, fnt);
+  snprintf(temp_fnt, 127, "/cd/%s", fnt);
 
   /* If we arent loaded then load eveyrthing, otherwise just load texture */
   if (!font_loaded) {

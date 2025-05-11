@@ -7,10 +7,11 @@
 
 static uint8_t recv_buff[196];
 
-static void vbl_allinfo_callback(maple_frame_t * frm)
+static void vbl_allinfo_callback(maple_state_t *state, maple_frame_t * frm)
 {
 	maple_response_t	*resp;
-
+	(void) state;
+	
 	/* So.. did we get a response? */
 	resp = (maple_response_t *)frm->recv_buf;
 
@@ -19,24 +20,14 @@ static void vbl_allinfo_callback(maple_frame_t * frm)
 		/* Copy in the new buff */
 		memcpy(recv_buff, resp, 196);
 	} 
-	/*else
-	{
-		printf("maple: bad response %d on device\n",resp->response); 
-		memcpy(recv_buff, resp, 196);
-		
-	}*/
 	
 	maple_frame_unlock(frm);
 	genwait_wake_all(frm);
 }
 
 /* Send a ALLINFO command for the given port/unit */
-static int send_allinfo(int p, int u)
+static int send_allinfo(maple_device_t * dev)
 {
-	maple_device_t * dev;
-
-	dev = &maple_state.ports[p].units[u];
-
 	// Reserve access; if we don't get it, forget about it 
 	if (maple_frame_lock(&dev->frame) < 0)
 	{
@@ -46,8 +37,8 @@ static int send_allinfo(int p, int u)
 	// Setup our autodetect frame to probe at a new device 
 	maple_frame_init(&dev->frame);
 	dev->frame.cmd = MAPLE_COMMAND_ALLINFO;
-	dev->frame.dst_port = p;
-	dev->frame.dst_unit = u;
+	dev->frame.dst_port = dev->port;
+	dev->frame.dst_unit = dev->unit;
 	dev->frame.callback = vbl_allinfo_callback;
 	maple_queue_frame(&dev->frame);
 	
@@ -66,20 +57,17 @@ static int send_allinfo(int p, int u)
 	return MAPLE_EOK;
 }
 
-static void vm2_reply(maple_frame_t * frm)
+static void vm2_reply(maple_state_t *state, maple_frame_t * frm)
 {
 	maple_response_t	*resp;
-
+	(void) state;
+	
 	/* So.. did we get a response? */
 	resp = (maple_response_t *)frm->recv_buf;
 
 	if (resp->response != MAPLE_RESPONSE_OK)
 	{
 		printf("maple: bad response %d on device, wait ACK\n",resp->response); 
-	}
-	else
-	{
-		printf("set image done\n");
 	}
 	
 	memcpy(recv_buff, resp, 4);
@@ -145,7 +133,7 @@ int check_vm2_present(maple_device_t * dev)
 	/* Clear the old buffer */
 	memset(recv_buff, 0, 196);
 	
-	if (send_allinfo(dev->port, dev->unit) != MAPLE_EOK)
+	if (send_allinfo(dev) != MAPLE_EOK)
 	{
 		return 0;
 	}
@@ -157,8 +145,6 @@ int check_vm2_present(maple_device_t * dev)
 	{
 		return 1;
 	}
-	
-	printf("check_vm2_present ERROR: %s\n", info->extended);
 	
 	return 0;
 }

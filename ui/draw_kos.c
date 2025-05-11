@@ -11,12 +11,11 @@
 #include "draw_kos.h"
 
 #include <stdio.h>
+#include <math.h>
 
 #include "../inc/dat_format.h"
 #include "draw_prototypes.h"
 #include "font_prototypes.h"
-
-extern int round(float x);
 
 image img_empty_boxart;
 image img_dir_boxart;

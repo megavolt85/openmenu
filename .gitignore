@@ -8,6 +8,7 @@
 gdrom
 .vscode
 tools/*.exe
+tools/*.7z
 tools/*.dbg
 tools/*.com
 tools/*.ini

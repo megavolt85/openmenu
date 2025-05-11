@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../gdrom/gdrom_fs.h"
-
 #define PVR_HDR_SIZE 0x20
 
 static unsigned char* _internal_buf = NULL;
@@ -149,7 +147,7 @@ static void pvr_read_to_internal(const char* filename) {
   file_t tex_fd;
   //memcpy(filename_safe, DISC_PREFIX, strlen(DISC_PREFIX) + 1);
   //strcat(filename_safe, filename);
-  snprintf(filename_safe, 127, "%s%s", DISC_PREFIX, filename);
+  snprintf(filename_safe, 127, "/cd/%s", filename);
 
   /* replace all - with _ */
   char* iter = filename_safe;

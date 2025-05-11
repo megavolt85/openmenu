@@ -9,9 +9,13 @@
  */
 
 #include "global_settings.h"
-
-#include <external/libcrayonvmu/savefile.h>
-#include <external/libcrayonvmu/setup.h>
+#include <dc/vmu_pkg.h>
+#include <dc/vmufs.h>
+#include <dc/fs_vmu.h>
+#include <dc/maple.h>
+#include <dc/maple/vmu.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* Images and such */
 #if __has_include("openmenu_lcd.h") && __has_include("openmenu_pal.h") && __has_include("openmenu_vmu.h")
@@ -30,146 +34,241 @@
 #define OPENMENU_ICONS (0)
 #endif
 
-static crayon_savefile_details_t savefile_details;
 static openmenu_settings savedata;
 
-static void settings_defaults(void) {
-  savedata.identifier[0] = 'O';
-  savedata.identifier[1] = 'M';
-  savedata.version = 1;
-  savedata.padding = 0;
-  savedata.ui = UI_LINE_DESC;
-  savedata.region = REGION_NTSC_U;
-  savedata.aspect = ASPECT_NORMAL;
-  savedata.sort = SORT_DEFAULT;
-  savedata.filter = FILTER_ALL;
-  savedata.beep = BEEP_ON;
-  savedata.multidisc = MULTIDISC_SHOW;
-  savedata.custom_theme = THEME_OFF;
-  savedata.custom_theme_num = THEME_0;
+static void settings_defaults(void) 
+{
+	savedata.identifier[0] = 'O';
+	savedata.identifier[1] = 'M';
+	savedata.version = SETTINGS_VERSION;
+	savedata.ui = UI_LINE_DESC;
+	savedata.region = REGION_NTSC_U;
+	savedata.aspect = ASPECT_NORMAL;
+	savedata.sort = SORT_DEFAULT;
+	savedata.filter = FILTER_ALL;
+	savedata.beep = BEEP_ON;
+	savedata.multidisc = MULTIDISC_SHOW;
+	savedata.custom_theme = THEME_OFF;
+	savedata.custom_theme_num = THEME_0;
 }
 
-static void settings_create(void) {
-  // If we don't already have a savefile, choose a VMU
-  if (savefile_details.valid_memcards) {
-    for (int iter = 0; iter <= 3; iter++) {
-      for (int jiter = 1; jiter <= 2; jiter++) {
-        if (crayon_savefile_get_vmu_bit(savefile_details.valid_memcards, iter, jiter)) {  // Use the left most VMU
-          savefile_details.savefile_port = iter;
-          savefile_details.savefile_slot = jiter;
-          goto Exit_loop_2;
-        }
-      }
+static void vmu_alldisplay_icon(uint8_t *bitmap)
+{
+    int            i = 0;
+    maple_device_t *dev;
+
+    while((dev = maple_enum_type(i++, MAPLE_FUNC_LCD))) 
+    {
+        vmu_draw_lcd(dev, bitmap);
     }
-  }
-Exit_loop_2:;
-
-  settings_defaults();
-
-  settings_save();
 }
 
-void settings_init(void) {
-  /* Mostly from CrayonVMU example */
-  crayon_savefile_init_savefile_details(&savefile_details,
-                                        (uint8_t *)&savedata, sizeof(openmenu_settings), OPENMENU_ICONS, 1,
-                                        "openMenu Preferences\0", "openMenu Config\0", "openMenuPref\0", "OPENMENU.CFG\0");
+static int settings_validate(openmenu_settings *s)
+{
+	if (s->version != SETTINGS_VERSION) 
+	{
+		return -1;
+	}
+	
+	if (s->identifier[0] != 'O' || s->identifier[1] != 'M')
+	{
+		return -2;
+	}
+	
+	if ((s->ui < UI_START) || (s->ui > UI_END)) 
+	{
+		savedata.ui = UI_LINE_DESC;
+	}
+	
+	if ((s->region < REGION_START) || (s->region > REGION_END)) 
+	{
+		savedata.region = REGION_NTSC_U;
+	}
+	
+	if ((s->aspect < ASPECT_START) || (s->aspect > ASPECT_END)) 
+	{
+		savedata.aspect = ASPECT_NORMAL;
+	}
+	
+	if ((s->sort < SORT_START) || (s->sort > SORT_END)) 
+	{
+		savedata.sort = SORT_DEFAULT;
+	}
+	
+	if ((s->filter < FILTER_START) || (s->filter > FILTER_END)) 
+	{
+		savedata.filter = FILTER_ALL;
+	}
+	
+	if ((s->beep < BEEP_START) || (s->beep > BEEP_END)) 
+	{
+		savedata.beep = BEEP_ON;
+	}
+	
+	if ((s->multidisc < MULTIDISC_START) || (s->multidisc > MULTIDISC_END)) 
+	{
+		savedata.multidisc = MULTIDISC_SHOW;
+	}
+	
+	if ((s->custom_theme < THEME_START) || (s->custom_theme > THEME_END)) 
+	{
+		savedata.custom_theme_num = (CFG_CUSTOM_THEME_NUM) THEME_OFF;
+	}
+	
+	if (s->custom_theme_num > THEME_NUM_END) 
+	{
+		savedata.custom_theme_num = THEME_NUM_START;
+	}
+	
+	if (s->custom_theme) 
+	{
+		savedata.region = REGION_END + 1 + s->custom_theme_num;
+	}
+	
+	return 0;
+}
 
-  savefile_details.icon = OPENMENU_ICON;
-  savefile_details.icon_palette = (unsigned short *)OPENMENU_PAL;
-
+void settings_init(void)
+{
+	settings_defaults();
+	
 #if OPENMENU_ICONS
-  crayon_vmu_display_icon(savefile_details.valid_vmu_screens, OPENMENU_LCD);
+	vmu_alldisplay_icon(OPENMENU_LCD);
 #endif
-
-  // Find the first savefile (if it exists)
-  for (int iter = 0; iter <= 3; iter++) {
-    for (int jiter = 1; jiter <= 2; jiter++) {
-      if (crayon_savefile_get_vmu_bit(savefile_details.valid_saves, iter, jiter)) {  // Use the left most VMU
-        savefile_details.savefile_port = iter;
-        savefile_details.savefile_slot = jiter;
-        goto Exit_loop_1;
-      }
-    }
-  }
-Exit_loop_1:
-
-  settings_load();
-  settings_validate();
+	thd_sleep(200);
+	
+	settings_load();
 }
 
-void settings_validate(void) {
-  if (savedata.version != 1) {
-    settings_defaults();
-    settings_save();
-    return;
-  }
-
-  if ((savedata.ui < UI_START) || (savedata.ui > UI_END)) {
-    savedata.ui = UI_LINE_DESC;
-  }
-
-  if ((savedata.region < REGION_START) || (savedata.region > REGION_END)) {
-    savedata.region = REGION_NTSC_U;
-  }
-
-  if ((savedata.aspect < ASPECT_START) || (savedata.aspect > ASPECT_END)) {
-    savedata.aspect = ASPECT_NORMAL;
-  }
-
-  if ((savedata.sort < SORT_START) || (savedata.sort > SORT_END)) {
-    savedata.sort = SORT_DEFAULT;
-  }
-
-  if ((savedata.filter < FILTER_START) || (savedata.filter > FILTER_END)) {
-    savedata.filter = FILTER_ALL;
-  }
-
-  if ((savedata.beep < BEEP_START) || (savedata.beep > BEEP_END)) {
-    savedata.beep = BEEP_ON;
-  }
-  if ((savedata.multidisc < MULTIDISC_START) || (savedata.multidisc > MULTIDISC_END)) {
-    savedata.multidisc = MULTIDISC_SHOW;
-  }
-
-  if ((savedata.custom_theme < THEME_START) || (savedata.custom_theme > THEME_END)) {
-    savedata.custom_theme_num = (CFG_CUSTOM_THEME_NUM) THEME_OFF;
-  }
-
-  if ((savedata.custom_theme_num < THEME_NUM_START) || (savedata.custom_theme_num > THEME_NUM_END)) {
-    savedata.custom_theme_num = THEME_NUM_START;
-  }
-
-  if (savedata.custom_theme) {
-    savedata.region = REGION_END + 1 + savedata.custom_theme_num;
-  }
-}
-
-void settings_load(void) {
-  // Try and load savefile
-  crayon_savefile_load(&savefile_details);
-
-  // No savefile yet
-  if (savefile_details.valid_memcards && savefile_details.savefile_port == -1 && savefile_details.savefile_slot == -1) {
-    settings_create();
-  }
+void settings_load(void) 
+{
+	char save_name[24];
+	maple_device_t *vmu;
+	file_t f;
+	openmenu_settings tmp;
+	
+	for (int i = 0; i < 8; i++)
+	{
+		if (!(vmu = maple_enum_type(i, MAPLE_FUNC_MEMCARD)))
+		{
+			// no more connected VMU's
+			//printf("vmu %d not connected\n", i);
+			return;
+		}
+		
+		// Try and load savefile
+		
+		sprintf(save_name, "/vmu/%c%c/OPENMENU.CFG", vmu->port+'A', vmu->unit+'0');
+		
+		if ((f = fs_open(save_name, O_RDONLY)) == FILEHND_INVALID)
+		{
+			//printf("save %s not found\n", save_name);
+			continue;
+		}
+		
+		fs_read(f, &tmp, sizeof(openmenu_settings));
+		
+		if (settings_validate(&tmp) < 0)
+		{
+			//printf("settings not valid\n");
+			fs_close(f);
+			fs_unlink(save_name);
+			continue;
+		}
+		
+		memcpy(&savedata, &tmp, sizeof(openmenu_settings));
+		
+		fs_close(f);
+		
+		if (savedata.beep == BEEP_ON)
+		{
+			vmu_beep_raw(vmu, 0x000065f0); // Turn on Beep
+			thd_sleep(500);
+			vmu_beep_raw(vmu, 0x00000000); // Turn off Beep
+		}
+		
+		return;
+	}
 }
 
 /* Beeps while saving if enabled */
-void settings_save(void) {
-  maple_device_t *vmu = NULL;
-  if ((savedata.beep == BEEP_ON) && (vmu = maple_enum_dev(savefile_details.savefile_port, savefile_details.savefile_slot))) {
-    vmu_beep_raw(vmu, 0x000065f0); /* Turn on Beep */
-  }
-  if (savefile_details.valid_memcards) {
-    crayon_savefile_save(&savefile_details);
-    savefile_details.valid_saves = crayon_savefile_get_valid_saves(&savefile_details);
-    if ((savedata.beep == BEEP_ON) && (vmu)) {
-      vmu_beep_raw(vmu, 0x00000000); /* Turn off Beep */
-    }
-  }
+void settings_save(void) 
+{
+	char save_name[24];
+	maple_device_t *vmu;
+	file_t f;
+	int pkg_size;
+	vmu_pkg_t pkg;
+	uint8_t *pkg_out;
+	
+	strcpy(pkg.desc_short, "openMenu Config");
+    strcpy(pkg.desc_long, "openMenu Preferences");
+    strcpy(pkg.app_id, "openMenuPref");
+    
+    pkg.icon_cnt = OPENMENU_ICONS;
+    pkg.icon_data = OPENMENU_ICON;
+    pkg.icon_anim_speed = 0;
+    pkg.eyecatch_type = VMUPKG_EC_NONE;
+	memcpy(pkg.icon_pal, OPENMENU_PAL, 32);
+	pkg.data = (uint8_t *) &savedata;
+	pkg.data_len = sizeof(openmenu_settings);
+	
+	if(vmu_pkg_build(&pkg, &pkg_out, &pkg_size) < 0)
+	{
+		//printf("ERROR can't build vmu_pkg\n");
+		return;
+	}
+	
+	for (int i = 0; i < 8; i++)
+	{
+		if (!(vmu = maple_enum_type(i, MAPLE_FUNC_MEMCARD)))
+		{
+			// no more connected VMU's
+			break;
+		}
+		
+		sprintf(save_name, "/vmu/%c%c/OPENMENU.CFG", vmu->port+'A', vmu->unit+'0');
+		
+		if ((f = fs_open(save_name, O_RDONLY)) != FILEHND_INVALID)
+		{
+			// save file found
+			fs_close(f);
+			fs_unlink(save_name);
+		}
+		
+		if((vmufs_free_blocks(vmu)*512) < pkg_size)
+		{
+			// no free memory, try next vmu
+			//printf("ERROR vmu don't have free memory\n");
+			continue;
+		}
+		
+		if ((f = fs_open(save_name, O_WRONLY | O_META)) == FILEHND_INVALID)
+		{
+			// can't create save file, try next vmu
+			//printf("ERROR cant create %s\n", save_name);
+			fs_close(f);
+			fs_unlink(save_name);
+		}
+		
+		fs_write(f, pkg_out, pkg_size);
+		fs_close(f);
+		
+		if (savedata.beep == BEEP_ON)
+		{
+			vmu_beep_raw(vmu, 0x000065f0); // Turn on Beep
+			thd_sleep(500);
+			vmu_beep_raw(vmu, 0x00000000); // Turn off Beep
+		}
+		
+		break;
+	}
+	
+	free(pkg_out);
 }
 
-openmenu_settings *settings_get(void) {
-  return &savedata;
+openmenu_settings *settings_get(void) 
+{
+	return &savedata;
 }
+

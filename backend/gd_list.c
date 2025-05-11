@@ -25,8 +25,7 @@
 #include "gd_list.h"
 
 #ifdef _arch_dreamcast
-#include "../gdrom/gdrom_fs.h"
-#define PATH_PREFIX DISC_PREFIX
+#define PATH_PREFIX "/cd/"
 #else
 #define PATH_PREFIX ""
 #endif
