@@ -9,6 +9,7 @@
 #include "gdmenu_binary.h"
 #include "cb_loader.h"
 #include "controls.p1.h"
+
 extern maple_device_t *vm2_dev;
 
 static void wait_cd_ready(void) {

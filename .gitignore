@@ -4,7 +4,6 @@
 *.BIN
 *.elf
 *.map
-*loader*
 gdrom
 .vscode
 tools/*.exe
