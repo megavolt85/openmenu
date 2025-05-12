@@ -16,6 +16,7 @@
 #include <dc/maple/vmu.h>
 #include <string.h>
 #include <stdlib.h>
+#include <kos/thread.h>
 
 /* Images and such */
 #if __has_include("openmenu_lcd.h") && __has_include("openmenu_pal.h") && __has_include("openmenu_vmu.h")

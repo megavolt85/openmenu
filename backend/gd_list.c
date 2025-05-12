@@ -17,6 +17,7 @@
 #include <strings.h>
 #endif
 
+#include <kos/fs.h>
 #include <ctype.h>
 #include "../external/ini.h"
 #include "db_item.h"

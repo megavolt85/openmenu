@@ -9,7 +9,7 @@
  */
 
 #pragma once
-
+#include <kos/fs.h>
 #include <external/uthash.h>
 
 typedef struct bin_item {

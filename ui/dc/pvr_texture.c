@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <kos/fs.h>
 
 #define PVR_HDR_SIZE 0x20
 

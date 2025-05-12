@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <kos/fs.h>
 
 #include "../../inc/dbgprint.h"
 #include "../draw_prototypes.h"
