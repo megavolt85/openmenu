@@ -1,7 +1,8 @@
 #include <stdio.h>
 
-typedef struct maple_alldevinfo {
-    uint32  functions;              /**< \brief Function codes supported */
+typedef struct maple_alldevinfo
+{
+	uint32  functions;              /**< \brief Function codes supported */
     uint32  function_data[3];       /**< \brief Additional data per function */
     uint8   area_code;              /**< \brief Region code */
     uint8   connector_direction;    /**< \brief ? */

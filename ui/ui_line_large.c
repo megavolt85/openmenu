@@ -15,15 +15,23 @@
 
 /* @Note: whats the plan here? */
 
-FUNCTION(UI_NAME, init) {
+FUNCTION(UI_NAME, init)
+{
+	
 }
 
-FUNCTION(UI_NAME, setup) {
+FUNCTION(UI_NAME, setup)
+{
+	
 }
 
-FUNCTION_INPUT(UI_NAME, handle_input) {
+FUNCTION_INPUT(UI_NAME, handle_input)
+{
   (void)button;
 }
 
-FUNCTION(UI_NAME, draw) {
+FUNCTION(UI_NAME, draw)
+{
+	
 }
+

@@ -12,36 +12,40 @@
 #include <kos/fs.h>
 #include <external/uthash.h>
 
-typedef struct bin_item {
-  char ID[12];
-  uint32_t offset;
-  UT_hash_handle hh; /* makes this structure hashable */
+typedef struct bin_item
+{
+	char ID[12];
+	uint32_t offset;
+	UT_hash_handle hh; /* makes this structure hashable */
 } bin_item;
 
-typedef struct bin_header {
-  union {
-    struct
-    {
-      char alpha[3];
-      char version;
-    } rich;
-    uint32_t raw;
-  } magic;             /* DAT1 : DAT + single digit version */
-  uint32_t chunk_size; /* Size of each chunk in the file */
-  uint32_t num_chunks; /* How many chunks are present in this bin */
-  uint32_t padding0;   /* Unused in ver1 */
+typedef struct bin_header
+{
+	union
+	{
+		struct
+		{
+			char alpha[3];
+			char version;
+		} rich;
+		uint32_t raw;
+	} magic;             /* DAT1 : DAT + single digit version */
+	uint32_t chunk_size; /* Size of each chunk in the file */
+	uint32_t num_chunks; /* How many chunks are present in this bin */
+	uint32_t padding0;   /* Unused in ver1 */
 } bin_header;
 
-typedef struct dat_file {
-  uint32_t chunk_size; /* Size of each chunk in the file */
-  uint32_t num_chunks; /* How many chunks are present in this bin */
+typedef struct dat_file
+{
+	uint32_t chunk_size; /* Size of each chunk in the file */
+	uint32_t num_chunks; /* How many chunks are present in this bin */
 #ifdef STANDALONE_BINARY
-  FILE *handle;
+	FILE *handle;
 #else
-  file_t handle;        /* Open File Handle, commonly FILE* */
+	file_t handle;        /* Open File Handle, commonly FILE* */
 #endif
-  bin_item *items;     /* Holds actual data */
-  bin_item *hash;      /* Hash table for above */
+	bin_item *items;     /* Holds actual data */
+	bin_item *hash;      /* Hash table for above */
 } dat_file;
 
 int DAT_init(dat_file *bin);

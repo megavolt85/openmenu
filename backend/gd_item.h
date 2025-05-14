@@ -10,14 +10,15 @@
 
 #pragma once
 
-typedef struct gd_item {
-  char name[128];
-  char date[12];
-  char product[12];
-  char disc[8];
-  char version[8];
-  char region[4];
-  unsigned int slot_num;
-  char vga[1];
+typedef struct gd_item
+{
+	char name[128];
+	char date[12];
+	char product[12];
+	char disc[8];
+	char version[8];
+	char region[4];
+	unsigned int slot_num;
+	char vga[1];
 } gd_item;
 

@@ -16,9 +16,10 @@
 /* 1mb buffer */
 #define TEXMAN_BUFFER_SIZE (2 * 1024 * 1024)
 
-struct Simple_Texture {
-  unsigned char *location;
-  int width, height;
+struct Simple_Texture
+{
+	unsigned char *location;
+	int width, height;
 };
 
 /* used for initialization */

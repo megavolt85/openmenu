@@ -18,11 +18,12 @@
 
 struct dat_file;
 
-typedef struct dimen_RECT {
-  int16_t x;
-  int16_t y;
-  int16_t w;
-  int16_t h;
+typedef struct dimen_RECT
+{
+	int16_t x;
+	int16_t y;
+	int16_t w;
+	int16_t h;
 } dimen_RECT;
 
 /* Called only once at start */

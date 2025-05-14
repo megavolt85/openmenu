@@ -17,50 +17,54 @@
 
 struct image;
 
-typedef struct theme_color {
-  uint32_t text_color;
-  uint32_t highlight_color;
-  uint32_t menu_text_color;
-  uint32_t menu_highlight_color;
-  uint32_t menu_bkg_color;
-  uint32_t menu_bkg_border_color;
-  uint32_t icon_color;
+typedef struct theme_color
+{
+	uint32_t text_color;
+	uint32_t highlight_color;
+	uint32_t menu_text_color;
+	uint32_t menu_highlight_color;
+	uint32_t menu_bkg_color;
+	uint32_t menu_bkg_border_color;
+	uint32_t icon_color;
 } theme_color;
 
-typedef struct theme_region {
-  const char *bg_left;
-  const char *bg_right;
-  theme_color colors;
+typedef struct theme_region
+{
+	const char *bg_left;
+	const char *bg_right;
+	theme_color colors;
 } theme_region;
 
-typedef struct theme_custom {
-  char bg_left[32];
-  char bg_right[32];
-  char name[20];
-  theme_color colors;
+typedef struct theme_custom
+{
+	char bg_left[32];
+	char bg_right[32];
+	char name[20];
+	theme_color colors;
 } theme_custom;
 
-typedef struct theme_scroll {
-  char bg_left[32];
-  char bg_right[32];
-  char name[20];
-  theme_color colors;
-  char font[32];
-  uint32_t cursor_color;
-  uint32_t multidisc_color;
-  int cursor_width;
-  int cursor_height;
-  int items_per_page;
-  int pos_gameslist_x;
-  int pos_gameslist_y;
-  int pos_gameinfo_x;
-  int pos_gameinfo_region_y;
-  int pos_gameinfo_vga_y;
-  int pos_gameinfo_disc_y;
-  int pos_gameinfo_date_y;
-  int pos_gameinfo_version_y;
-  int pos_gametxr_x;
-  int pos_gametxr_y;
+typedef struct theme_scroll
+{
+	char bg_left[32];
+	char bg_right[32];
+	char name[20];
+	theme_color colors;
+	char font[32];
+	uint32_t cursor_color;
+	uint32_t multidisc_color;
+	int cursor_width;
+	int cursor_height;
+	int items_per_page;
+	int pos_gameslist_x;
+	int pos_gameslist_y;
+	int pos_gameinfo_x;
+	int pos_gameinfo_region_y;
+	int pos_gameinfo_vga_y;
+	int pos_gameinfo_disc_y;
+	int pos_gameinfo_date_y;
+	int pos_gameinfo_version_y;
+	int pos_gametxr_x;
+	int pos_gametxr_y;
 } theme_scroll;
 
 int theme_manager_load(void);

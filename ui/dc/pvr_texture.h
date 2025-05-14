@@ -13,11 +13,12 @@
 #include <stdint.h>
 
 /* Offset and dimensions of each sprite within a spritesheet (romdisk/foo.txt file) */
-typedef struct image {
-  char name[16];
-  uint32_t width, height;
-  uint32_t format;
-  pvr_ptr_t texture;
+typedef struct image
+{
+	char name[16];
+	uint32_t width, height;
+	uint32_t format;
+	pvr_ptr_t texture;
 } image;
 
 void* pvr_get_internal_buffer(void);

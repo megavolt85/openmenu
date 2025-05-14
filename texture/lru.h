@@ -6,18 +6,20 @@
 typedef unsigned int (*user_add_cb)(const char* key, void* user);
 typedef unsigned int (*user_del_cb)(const char* key, void* value, void* user);
 
-struct CacheEntry {
-  char* key;
-  int value;
-  UT_hash_handle hh;
+struct CacheEntry
+{
+	char* key;
+	int value;
+	UT_hash_handle hh;
 };
 
-typedef struct cache_instance {
-  unsigned int cache_max_size;
-  void* callback_data;
-  user_add_cb callback_add;
-  user_del_cb callback_del;
-  struct CacheEntry* cache;
+typedef struct cache_instance
+{
+	unsigned int cache_max_size;
+	void* callback_data;
+	user_add_cb callback_add;
+	user_del_cb callback_del;
+	struct CacheEntry* cache;
 } cache_instance;
 
 void cache_set_size(cache_instance* cache, int size);

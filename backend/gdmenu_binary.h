@@ -1,4 +1,5 @@
-const unsigned char gdmenu_loader[7556] = {
+const unsigned char gdmenu_loader[7556] =
+{
     0x06, 0xd0, 0x0e, 0x40, 0x08, 0xd2, 0x06, 0xd1, 0x06, 0xd0, 0x23, 0x64, 0x06, 0x63, 0x10, 0x41,
     0x32, 0x22, 0xfb, 0x8f, 0x04, 0x72, 0x2b, 0x44, 0x09, 0x00, 0x09, 0x00, 0xf0, 0x00, 0x00, 0x50,
     0x56, 0x07, 0x00, 0x00, 0x2c, 0x00, 0x01, 0x8c, 0x00, 0x00, 0xe0, 0xac, 0x14, 0xd0, 0x15, 0xd1,
@@ -477,13 +478,13 @@ const int gdmenu_loader_length = 7556;
 
 typedef struct
 {
-  uint32_t region_free;    // 0 - off, 1 - on (patch bios region protection)
-  uint32_t force_vga;      // 0 - off, 1 - on (patch vga flag bios check)
-  uint32_t IGR;            // 0 - off, 1 - on (In-Game Reset)
-  uint32_t boot_intro;     // 0 - skip, 1 - show (boot animation)
-  uint32_t sega_license;   // 0 - skip, 1 - show (IP.BIN license screen)
-  uint32_t game_region;    // 0 - J, 1 - U, 2 - E
-  uint32_t disc_type;      // 0 - CD, 1 - GD
-  uint32_t need_game_fix;  // 0 - no, 1 - yes
+	uint32_t region_free;    // 0 - off, 1 - on (patch bios region protection)
+	uint32_t force_vga;      // 0 - off, 1 - on (patch vga flag bios check)
+	uint32_t IGR;            // 0 - off, 1 - on (In-Game Reset)
+	uint32_t boot_intro;     // 0 - skip, 1 - show (boot animation)
+	uint32_t sega_license;   // 0 - skip, 1 - show (IP.BIN license screen)
+	uint32_t game_region;    // 0 - J, 1 - U, 2 - E
+	uint32_t disc_type;      // 0 - CD, 1 - GD
+	uint32_t need_game_fix;  // 0 - no, 1 - yes
 } ldr_params_t;
 

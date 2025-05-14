@@ -12,18 +12,20 @@
 
 #include <stdint.h>
 
-typedef struct slot_format {
-  uint32_t width, height;
-  uint32_t format;
+typedef struct slot_format
+{
+	uint32_t width, height;
+	uint32_t format;
 } slot_format;
 
-typedef struct block_pool {
-  void *base;
-  unsigned int size;
-  unsigned int slots;
-  unsigned int slot_size;
-  unsigned char *state;
-  slot_format *format;
+typedef struct block_pool
+{
+	void *base;
+	unsigned int size;
+	unsigned int slots;
+	unsigned int slot_size;
+	unsigned char *state;
+	slot_format *format;
 } block_pool;
 
 void pool_create(block_pool *pool, void *buffer, unsigned int size, unsigned int slot);
@@ -34,16 +36,20 @@ void pool_dealloc_all(block_pool *pool);
 void pool_dealloc_slot(block_pool *pool, unsigned int slot_num);
 
 /* inline funcs */
-static inline void *pool_get_slot_addr(const block_pool *pool, unsigned int slot_num) {
-  return (void *)((uintptr_t)pool->base + slot_num * pool->slot_size);
+static inline void *pool_get_slot_addr(const block_pool *pool, unsigned int slot_num)
+{
+	return (void *)((uintptr_t)pool->base + slot_num * pool->slot_size);
 }
 
-static inline const slot_format *pool_get_slot_format(const block_pool *pool, unsigned int slot_num) {
-  return &pool->format[slot_num];
+static inline const slot_format *pool_get_slot_format(const block_pool *pool, unsigned int slot_num)
+{
+	return &pool->format[slot_num];
 }
 
-static inline void pool_set_slot_format(block_pool *pool, unsigned int slot_num, unsigned int width, unsigned int height, unsigned int format) {
-  pool->format[slot_num].width = width;
-  pool->format[slot_num].height = height;
-  pool->format[slot_num].format = format;
+static inline void pool_set_slot_format(block_pool *pool, unsigned int slot_num, unsigned int width, unsigned int height, unsigned int format)
+{
+	pool->format[slot_num].width = width;
+	pool->format[slot_num].height = height;
+	pool->format[slot_num].format = format;
 }
+

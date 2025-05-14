@@ -60,10 +60,14 @@ typedef struct ui_template
 	void (*handle_input)(unsigned int);
 } ui_template;
 
-#define UI_TEMPLATE(name)                                                                                                                                                                \
-  (ui_template) {                                                                                                                                                                        \
-    .init = FUNC_NAME(name, init), .setup = FUNC_NAME(name, setup), .drawOP = FUNC_NAME(name, drawOP), .drawTR = FUNC_NAME(name, drawTR), .handle_input = FUNC_NAME(name, handle_input), \
-  }
+#define UI_TEMPLATE(name) (ui_template)				\
+{													\
+	.init = FUNC_NAME(name, init),					\
+	.setup = FUNC_NAME(name, setup),				\
+	.drawOP = FUNC_NAME(name, drawOP),				\
+	.drawTR = FUNC_NAME(name, drawTR),				\
+	.handle_input = FUNC_NAME(name, handle_input),	\
+}
 
 static ui_template ui_choices[] =
 {
